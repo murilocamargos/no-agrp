@@ -1,2 +1,3 @@
-# onl-agnaopolarizado
-Implementação de algoritmo genético com cruzamento real polarizado em MATLAB
+# AG real polarizado
+
+Implementação de algoritmo genético real polarizado em MATLAB
