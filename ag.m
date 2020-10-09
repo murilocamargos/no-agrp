@@ -1,43 +1,37 @@
-clear all
-clc
+clc; clear;
+close all;
 
-% AG com cruzamento do tipo real polarizado.
+%% Genetic algotihm with real representation and polarized crossover
 
-% região factível
-rf = [-3 3 -3 3];
+fr = [-3 3 -3 3]; % feasible region
+psz = [5 5];      % population size
+maxgen = 100;     % max number of generations
+cr = 0.6;         % crossover rate
+er = 0.2;         % extrapolation rate
+mr = 0.05;        % mutation rate
+me = 0.01;        % min error allowed
 
-% tamanho da pop.
-tam = [5 5];
-% numero máximo de gerações
-ger = 100;
-% taxa de cruzamento
-tc = 0.6;
-% taxa de extrapolação
-te = 0.2;
-% taxa de mutação
-tm = 0.05;
+% Creates the initial population
+pop = initPop(fr, psz);
+% Check stop criterion
+stop = checkStop(pop(:, :), me);
+% Init generation counter
+gen = 0;
 
-t = 0.01;
-
-pop = gerarPop(rf, tam);
-plotPop(rf, pop);
-
-i = 0;
-stop = 0;
-while (i <= ger && stop == 0)
-    pop = torneio(pop);
-    filhos = cruzamento(pop, tc, te, tm);
-    pop = substituir(pop, filhos);
-    
-    plotPop(rf, pop);
-    
-    i = i + 1;
-    stop = parada(pop(:, :), t);
+while gen <= maxgen && stop == 0
+    pop = selection(pop);
+    son = crossover(pop, cr, er, mr);
+    pop = replace(pop, son);
+    stop = checkStop(pop(:, :), me);
+    gen = gen + 1;
 end
 
-aproveitamento(pop, t);
-
-hold off
+%% Plot results
 peaks;
-hold on
-plot(pop(:, 1), pop(:, 2), 'ro')
+hold on;
+zhat = peaks(pop(:, 1), pop(:, 2));
+plot3(pop(:, 1), pop(:, 2), zhat, 'rx', 'LineWidth', 2);
+hold off;
+box on;
+grid on;
+legend({'Peaks function', 'Individuals'}, 'Location', 'SouthWest')
